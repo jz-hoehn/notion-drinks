@@ -7,10 +7,11 @@ const PORT = process.env.PORT || 3000;
 const NOTION_API_KEY = process.env.NOTION_API_KEY;
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID;
 
-// Beispiel: /Testeintrag?person=<PageID-aus-PersonenDB>
+// Beispiel: /Apfel?person=<PageID>&preis=5
 app.get("/:title", async (req, res) => {
-  const title = req.params.title;
-  const personPageId = req.query.person; // Page-ID aus der Personen-Datenbank
+  const title = req.params.title || "Unbenannt";
+  const personPageId = req.query.person;
+  const preis = req.query.preis ? Number(req.query.preis) : 1; // Default = 1
   const today = new Date().toISOString();
 
   try {
@@ -46,7 +47,7 @@ app.get("/:title", async (req, res) => {
             }
           },
           Preis: {
-            number: 1
+            number: preis
           }
         }
       })
