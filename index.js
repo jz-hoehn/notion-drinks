@@ -7,8 +7,11 @@ const PORT = process.env.PORT || 3000;
 const NOTION_API_KEY = process.env.NOTION_API_KEY;
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID;
 
+// Beispiel: /Testeintrag?person=<PageID-aus-PersonenDB>
 app.get("/:title", async (req, res) => {
   const title = req.params.title;
+  const personPageId = req.query.person; // Page-ID aus der Personen-Datenbank
+  const today = new Date().toISOString();
 
   try {
     const response = await fetch("https://api.notion.com/v1/pages", {
@@ -27,6 +30,23 @@ app.get("/:title", async (req, res) => {
                 text: { content: title }
               }
             ]
+          },
+          Personen: personPageId
+            ? {
+                relation: [
+                  {
+                    id: personPageId
+                  }
+                ]
+              }
+            : undefined,
+          Datum: {
+            date: {
+              start: today
+            }
+          },
+          Preis: {
+            number: 1
           }
         }
       })
